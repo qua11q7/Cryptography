@@ -205,6 +205,7 @@ namespace Homework1 {
             return GetPermutations(list, length - 1).SelectMany(t => list.Where(o => !t.Contains(o)), (t1, t2) => t1.Concat(new T[] { t2 }));
         }
 
+        // Turns permutation into a readeable string. Ex: "1 -> 4, 2-> 3, 3 -> 1, 4 -> 2"
         static string GetPermutationString(IEnumerable<int> permutation) {
             StringBuilder builder = new StringBuilder();
             int permutationLength = permutation.Count();
