@@ -136,7 +136,7 @@ namespace Homework1 {
             // Create the long keyword text from obtained shift values.
             string longKeyword = Utilities.GetString(values);
 
-            // Try to figure out the shortest key possible, a.k.a find out the repeating text in the long keyword text.
+            // Try to figure out the shortest key possible, i.e find out the repeating text in the long keyword text.
             int blockSize = 1;
             while (blockSize++ <= Constants.MAX_BLOCK_SIZE) {
                 List<string> dividedKeyword = VigenereAnalyser.DivideCipherText(longKeyword, blockSize);

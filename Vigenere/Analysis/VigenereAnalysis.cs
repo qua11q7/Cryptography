@@ -23,6 +23,8 @@ namespace VigenereCipher.Analysis {
                     double coincidence = Coincidence.CalculateIndex(dividedCipherTexts.ElementAt(i));
                     error += Math.Abs(coincidence - Constants.EnglishIndexOfCoincidence);
 
+                    // Check after every 5 calculation of index of coincidence on a divided cipher text to see whether 
+                    // current block size is yielding good results. If error is too large, try next block size.
                     if (i % 5 == 0) {
                         double currentError = error / currentBlockSize;
                         if (currentError > 0.01) {
@@ -53,6 +55,7 @@ namespace VigenereCipher.Analysis {
             }
         }
 
+        // Divide given text to blockSize many text.
         public static List<string> DivideCipherText(string cipherText, int blockSize) {
             List<string> dividedCipherTexts = new List<string>();
             StringBuilder builder = new StringBuilder();
