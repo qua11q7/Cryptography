@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Helpers {
     public static class Constants {
         public const int MAX_BLOCK_SIZE = 200;
-        public const int MAX_PERMUTATION_LENGTH = 6;
+        public const int MAX_PERMUTATION_LENGTH = 7;
         public const double EnglishIndexOfCoincidence = 0.065;
 
         public const int AValue = 0;

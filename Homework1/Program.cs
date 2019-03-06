@@ -66,7 +66,7 @@ namespace Homework1 {
 
         static void HomeworkSection3() {
             // Generate random key to apply permutation cipher. The key size is kept relatively small for crypto analysis.
-            permutationKeyword = Utilities.GenerateRandomKey(6);
+            permutationKeyword = Utilities.GenerateRandomKey(7);
 
             // Encrypt the cypertext by using permutation cipher with random permutation key.
             Permutation permutation = new Permutation();
