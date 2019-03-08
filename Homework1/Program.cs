@@ -188,7 +188,8 @@ namespace Homework1 {
 
                     // If crypto analysis has been successfull, current permutation is the correct key for the permutation cipher.
                     if (successfull) {
-                        Console.WriteLine($"Permutation cipher has been decrypted successfully. Permutation Cipher Key: {GetPermutationString(permutation)}");
+                        Console.WriteLine($"Permutation cipher has been decrypted successfully." +
+                            $" Permutation Cipher Key: {GetPermutationString(permutation)}");
                         return true;
                     }
                 }
