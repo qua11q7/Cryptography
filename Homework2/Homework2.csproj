@@ -50,6 +50,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DifferentialCyrptanalysis\DifferentialCyrptanalysis.csproj">
+      <Project>{6A3E6DB7-15C4-49AF-9CBF-495DD6023F2F}</Project>
+      <Name>DifferentialCyrptanalysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SPNCipher\SPNCipher.csproj">
       <Project>{4D92157A-4C72-4B1F-AA68-B4250AC9F3EF}</Project>
       <Name>SPNCipher</Name>

@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SPNCipher {
-    internal interface IPermutation {
+    public interface IPermutation {
         Dictionary<int, int> Mapping { get; }
+        Dictionary<int, int> InverseMapping { get; }
         int Permutate(int input);
+        int InversePermutate(int input);
     }
 }

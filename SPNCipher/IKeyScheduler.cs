@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SPNCipher {
-    internal interface IKeyScheduler {
+    public interface IKeyScheduler {
         int MasterKey { get; }
         IEnumerable<int> GetRoundKeys(int roundCount);
     }

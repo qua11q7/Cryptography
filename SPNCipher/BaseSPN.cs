@@ -5,22 +5,32 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SPNCipher {
-    public abstract class BaseSPN {
-        protected const int RoundCount = 4;
-        protected const int BlockLength = 16;
+    public abstract class BaseSPN : ISPNCipher {
+        public int RoundCount { get; }
+        public int SubstitutionBoxCount { get; }
+        public int BlockLength { get; }
 
-        private ISubstitution _substitution;
-        private IPermutation _permutation;
-        private IKeyScheduler _keyScheduler;
+        public ISubstitution Substitution { get; }
+        public IPermutation Permutation { get; }
+        public IKeyScheduler KeyScheduler { get; }
+
+        public string Name { get; protected set; }
 
         internal BaseSPN(ISubstitution substitution, IPermutation permutation, IKeyScheduler keyScheduler) {
-            _substitution = substitution;
-            _permutation = permutation;
-            _keyScheduler = keyScheduler;
+            Substitution = substitution;
+            Permutation = permutation;
+            KeyScheduler = keyScheduler;
+
+            RoundCount = 4;
+            SubstitutionBoxCount = 4;
+            BlockLength = 16;
+
+            if (BlockLength / SubstitutionBoxCount != Substitution.InputLength)
+                throw new Exception("ISubstitution is not compatible with SPN.");
         }
 
         public int Encode(int input) {
-            IEnumerable<int> roundKeys = _keyScheduler.GetRoundKeys(RoundCount);
+            IEnumerable<int> roundKeys = KeyScheduler.GetRoundKeys(RoundCount);
             for (int i = 0; i < RoundCount; i++) {
                 // Add Round Key
                 input = AddRoundKey(input, roundKeys.ElementAt(i));
@@ -28,18 +38,43 @@ namespace SPNCipher {
                 // SBox Substitution
                 byte[] inputBytes = GetBytes(input);
                 for (int j = 0; j < 4; j++) {
-                    inputBytes[j] = _substitution.Substitute(inputBytes[j]);
+                    inputBytes[j] = Substitution.Substitute(inputBytes[j]);
                 }
                 input = GetInt(inputBytes);
 
                 // Permutation Layer Except Last Round
                 if (i != RoundCount - 1) {
-                    input = _permutation.Permutate(input);
+                    input = Permutation.Permutate(input);
                 }
             }
 
             // Add Last Round Key
             input = AddRoundKey(input, roundKeys.Last());
+            return input;
+        }
+
+        public int Decode(int input) {
+            IEnumerable<int> roundKeys = KeyScheduler.GetRoundKeys(RoundCount);
+
+            input = AddRoundKey(input, roundKeys.Last());
+
+            for (int i = roundKeys.Count() - 2; i >= 0; i--) {
+                // Permutation Layer Except Last Round
+                if (i != RoundCount - 1) {
+                    input = Permutation.InversePermutate(input);
+                }
+
+                // SBox Substitution
+                byte[] inputBytes = GetBytes(input);
+                for (int j = 0; j < 4; j++) {
+                    inputBytes[j] = Substitution.InverseSubstitute(inputBytes[j]);
+                }
+                input = GetInt(inputBytes);
+
+                // Add Round Key
+                input = AddRoundKey(input, roundKeys.ElementAt(i));
+            }
+
             return input;
         }
 
