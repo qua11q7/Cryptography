@@ -53,5 +53,8 @@
       <Name>SPNCipher</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="DifferentialCrpytanalysisDiagram.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

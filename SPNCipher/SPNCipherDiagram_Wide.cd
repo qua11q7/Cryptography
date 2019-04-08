@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SPNCipher.BaseSPN">
+    <Position X="2.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAAABAAABAAAAAAAAAABQAAIAAAIAAAAAAQACAAEA=</HashCode>
+      <FileName>BaseSPN.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="KeyScheduler" />
+      <Property Name="Substitution" />
+      <Property Name="Permutation" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SPNCipher.LFSRKeyScheduler" BaseTypeListCollapsed="true">
+    <Position X="7" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>LFSRKeyScheduler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SPNCipher.BasePermutation">
+    <Position X="13.75" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQCAAAABAAAAAAAAAAAAAEAAAAAQAAAAgAAAAAA=</HashCode>
+      <FileName>PermutationLayers.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SPNCipher.Permutation1" Collapsed="true">
+    <Position X="12.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>PermutationLayers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SPNCipher.Permutation2" Collapsed="true">
+    <Position X="15" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAEAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>PermutationLayers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SPNCipher.SPNCipher1" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SPNCiphers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SPNCipher.SPNCipher2" Collapsed="true">
+    <Position X="1" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SPNCiphers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SPNCipher.SPNCipher3" Collapsed="true">
+    <Position X="3" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SPNCiphers.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SPNCipher.BaseSubstitutionBox">
+    <Position X="9.5" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAgBAgAAAAAACAAAAAAAAAAQAAAAgAAAAAA=</HashCode>
+      <FileName>SubstitutionBoxes.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SPNCipher.SubstitutionBox1" Collapsed="true">
+    <Position X="8.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>SubstitutionBoxes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SPNCipher.SubstitutionBox2" Collapsed="true">
+    <Position X="10.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>SubstitutionBoxes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="SPNCipher.IKeyScheduler">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IKeyScheduler.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SPNCipher.IPermutation">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAABAAAAAAAAAAAAAEAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>IPermutation.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SPNCipher.ISPNCipher">
+    <Position X="0.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAABAAABAAAAAAAAAAAQAAIAAAIAAAAAAQAAAAEA=</HashCode>
+      <FileName>ISPNCipher.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="SPNCipher.ISubstitution">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgBAgAAAAAACAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>ISubstitution.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

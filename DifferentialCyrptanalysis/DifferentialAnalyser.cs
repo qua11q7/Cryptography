@@ -10,35 +10,37 @@ namespace DifferentialCyrptanalysis {
         private const double LOWER_BOUND_PROBABILITY = 0.01;
         private readonly ISPNCipher _spn;
 
-        private List<DifferentialExpression> _expressions;
+        private PlainTextGenerator _generator;
+        private List<DifferentialCharacteristic> _characteristics;
         private ISubstitution Substitution { get { return _spn.Substitution; } }
         private IPermutation Permutation { get { return _spn.Permutation; } }
 
         public DistributionTable Table { get; }
-        public DifferentialExpression Expression { get; private set; }
+        public DifferentialCharacteristic Characteristic { get; private set; }
         public List<int> ActiveSubstitutionBoxesInLastRound { get; private set; }
 
         public DifferentialAnalyser(ISPNCipher spn) {
             _spn = spn;
+            _generator = new PlainTextGenerator(_spn.BlockLength);
             Table = new DistributionTable(spn.Substitution);
-            _expressions = new List<DifferentialExpression>();
+            _characteristics = new List<DifferentialCharacteristic>();
         }
 
-        #region Expression Creation
-        public DifferentialExpression CreateExpression() {
+        #region Characteristic Creation
+        public DifferentialCharacteristic CreateCharacteristic() {
             List<int> inputDifferences = GetPossibleInputs();
             foreach (int inputDifference in inputDifferences) {
-                List<DifferentialExpression> expressions = GetExpressionsForSPN(inputDifference);
+                List<DifferentialCharacteristic> characteristics = GetCharacteristicsForSPN(inputDifference);
 
-                _expressions.AddRange(expressions);
+                _characteristics.AddRange(characteristics);
             }
 
-            _expressions = _expressions.OrderByDescending(e => e.Probability).ToList();
-            Expression = _expressions.First();
+            _characteristics = _characteristics.OrderByDescending(e => e.Probability).ToList();
+            Characteristic = _characteristics.First();
 
-            ActiveSubstitutionBoxesInLastRound = FindActiveSubstitutionBoxes(Expression.OutputDifference);
+            ActiveSubstitutionBoxesInLastRound = FindActiveSubstitutionBoxes(Characteristic.OutputDifference);
 
-            return Expression;
+            return Characteristic;
         }
 
         private List<int> GetPossibleInputs() {
@@ -55,33 +57,37 @@ namespace DifferentialCyrptanalysis {
             return inputs;
         }
 
-        private List<DifferentialExpression> GetExpressionsForSPN(int inputDifference) {
-            List<DifferentialExpression> inputExpressions = new List<DifferentialExpression>() { new DifferentialExpression(inputDifference, inputDifference, 1) };
+        private List<DifferentialCharacteristic> GetCharacteristicsForSPN(int inputDifference) {
+            List<DifferentialCharacteristic> inputCharacteristics = new List<DifferentialCharacteristic>() { new DifferentialCharacteristic(inputDifference, inputDifference, 1) };
             for (int r = 1; r < _spn.RoundCount; r++) {
-                for (int i = inputExpressions.Count - 1; i >= 0; i--) {
-                    DifferentialExpression inputExpression = inputExpressions[i];
-                    inputExpressions.RemoveAt(i);
+                for (int i = inputCharacteristics.Count - 1; i >= 0; i--) {
+                    DifferentialCharacteristic inputCharacteristic = inputCharacteristics[i];
+                    inputCharacteristics.RemoveAt(i);
 
-                    List<DifferentialExpression> outputExpressions = GetExpressionsForRound(inputExpression);
+                    List<DifferentialCharacteristic> outputCharacteristics = GetCharacteristicForRound(inputCharacteristic);
 
-                    inputExpressions.AddRange(outputExpressions);
+                    inputCharacteristics.AddRange(outputCharacteristics);
                 }
             }
 
-            return inputExpressions;
+            return inputCharacteristics;
         }
 
-        private List<DifferentialExpression> GetExpressionsForRound(DifferentialExpression expression) {
-            byte[] sBoxInputs = GetBytes(expression.OutputDifference);
+        private List<DifferentialCharacteristic> GetCharacteristicForRound(DifferentialCharacteristic characteristic) {
+            byte[] sBoxInputs = GetBytes(characteristic.OutputDifference);
             Dictionary<int, List<SubstitutionBoxOutput>> sBoxOutputs = GetSubstitutionOutputs(sBoxInputs);
 
-            List<DifferentialExpression> possibleOutcomes = GetPossibleSubstitutionOutcomes(expression.InputDifference, sBoxOutputs, expression.Probability);
+            List<DifferentialCharacteristic> possibleOutcomes = GetPossibleSubstitutionOutcomes(characteristic.InputDifference, sBoxOutputs, characteristic.Probability);
             possibleOutcomes.ForEach(e => {
-                e.AddIntermediateOutputs(expression.IntermediateOutputs);
-                e.AddIntermediateOutput(expression.OutputDifference);
+                e.AddIntermediateOutputs(characteristic.IntermediateOutputs);
+                e.AddIntermediateOutput(characteristic.OutputDifference);
+
+                List<List<SubstitutionBoxOutput>> usedBoxes = new List<List<SubstitutionBoxOutput>>(characteristic.UsedSubstitutionBoxes);
+                usedBoxes.AddRange(e.UsedSubstitutionBoxes);
+                e.SetUsedSubstitionBoxes(usedBoxes);
             });
 
-            List<DifferentialExpression> permutatedOutcomes = GetPermutatedOutcomes(possibleOutcomes);
+            List<DifferentialCharacteristic> permutatedOutcomes = GetPermutatedOutcomes(possibleOutcomes);
 
             return permutatedOutcomes;
         }
@@ -115,11 +121,11 @@ namespace DifferentialCyrptanalysis {
             return outputs.OrderByDescending(o => o.Score).ToList();
         }
 
-        private List<DifferentialExpression> GetPossibleSubstitutionOutcomes(int inputDifference, Dictionary<int, List<SubstitutionBoxOutput>> sBoxOutputs, double previosProbability = 1) {
+        private List<DifferentialCharacteristic> GetPossibleSubstitutionOutcomes(int inputDifference, Dictionary<int, List<SubstitutionBoxOutput>> sBoxOutputs, double previosProbability = 1) {
             List<List<SubstitutionBoxOutput>> allOutputs = sBoxOutputs.Select(k => k.Value).ToList();
             IEnumerable<IEnumerable<SubstitutionBoxOutput>> possibleOutcomes = allOutputs.CartesianProduct();
 
-            List<DifferentialExpression> outcomes = new List<DifferentialExpression>();
+            List<DifferentialCharacteristic> outcomes = new List<DifferentialCharacteristic>();
             foreach (IEnumerable<SubstitutionBoxOutput> possibleOutcome in possibleOutcomes) {
                 List<int> sBoxIndexes = sBoxOutputs.Keys.ToList();
                 int currentIndex = 0, output = 0;
@@ -130,21 +136,25 @@ namespace DifferentialCyrptanalysis {
                 }
 
                 if (probability > LOWER_BOUND_PROBABILITY) {
-                    outcomes.Add(new DifferentialExpression(inputDifference, output, probability));
+                    DifferentialCharacteristic characteristic = new DifferentialCharacteristic(inputDifference, output, probability);
+                    characteristic.AddUsedSubstitionBoxForRound(possibleOutcome.ToList());
+
+                    outcomes.Add(characteristic);
                 }
             }
 
             return outcomes;
         }
 
-        private List<DifferentialExpression> GetPermutatedOutcomes(List<DifferentialExpression> expressions) {
-            List<DifferentialExpression> permutatedOutcomes = new List<DifferentialExpression>();
-            foreach (DifferentialExpression expression in expressions) {
-                int output = Permutation.Permutate(expression.OutputDifference);
-                DifferentialExpression newExpression = new DifferentialExpression(expression.InputDifference, output, expression.Probability);
-                newExpression.AddIntermediateOutputs(expression.IntermediateOutputs);
+        private List<DifferentialCharacteristic> GetPermutatedOutcomes(List<DifferentialCharacteristic> characteristics) {
+            List<DifferentialCharacteristic> permutatedOutcomes = new List<DifferentialCharacteristic>();
+            foreach (DifferentialCharacteristic characteristic in characteristics) {
+                int output = Permutation.Permutate(characteristic.OutputDifference);
+                DifferentialCharacteristic newCharacteristic = new DifferentialCharacteristic(characteristic.InputDifference, output, characteristic.Probability);
+                newCharacteristic.AddIntermediateOutputs(characteristic.IntermediateOutputs);
+                newCharacteristic.AddUsedSubstitionBoxes(characteristic.UsedSubstitutionBoxes);
 
-                permutatedOutcomes.Add(newExpression);
+                permutatedOutcomes.Add(newCharacteristic);
             }
 
             return permutatedOutcomes;
@@ -167,13 +177,12 @@ namespace DifferentialCyrptanalysis {
 
         #region Cryptanalysis
         public int Analyse() {
-            if (_expressions == null || _expressions.Count == 0 || Expression == null)
-                CreateExpression();
+            if (_characteristics == null || _characteristics.Count == 0 || Characteristic == null)
+                CreateCharacteristic();
 
-            int neededPairs = (int)Math.Pow(1 / Expression.Probability, 2) * 100;
+            int neededPairs = (int)Math.Ceiling(20f / Characteristic.Probability);
 
-            PlainTextGenerator generator = new PlainTextGenerator(_spn.BlockLength);
-            Dictionary<int, int> plainTexts = generator.GetPlainTexts(neededPairs, Expression.InputDifference);
+            Dictionary<int, int> plainTexts = _generator.GetPlainTexts(neededPairs, Characteristic.InputDifference);
             List<int> partialKeys = GeneratePartialKeys();
 
             Dictionary<int, double> partialKeyMatchProbabilities = CalculateOutputDifference(plainTexts, partialKeys);
@@ -182,7 +191,7 @@ namespace DifferentialCyrptanalysis {
 
         private Dictionary<int, double> CalculateOutputDifference(Dictionary<int, int> inputs, List<int> partialKeys) {
             Dictionary<int, double> partialKeyMatchProbabilities = new Dictionary<int, double>();
-            byte[] inputsOfLastSubBoxes = GetBytes(Expression.OutputDifference);
+            byte[] inputsOfLastSubBoxes = GetBytes(Characteristic.OutputDifference);
 
             double correctPairs = 0;
             foreach (KeyValuePair<int, int> inputPair in inputs) {
@@ -273,26 +282,41 @@ namespace DifferentialCyrptanalysis {
         }
     }
 
-    public class DifferentialExpression {
+    public class DifferentialCharacteristic {
         public int InputDifference { get; }
         public int OutputDifference { get; }
         public double Probability { get; }
         public List<int> IntermediateOutputs { get; }
+        public List<List<SubstitutionBoxOutput>> UsedSubstitutionBoxes { get; }
 
-        public DifferentialExpression(int inputDifference, int outputDifference, double probability) {
+        public DifferentialCharacteristic(int inputDifference, int outputDifference, double probability) {
             InputDifference = inputDifference;
             OutputDifference = outputDifference;
             Probability = probability;
 
             IntermediateOutputs = new List<int>();
+            UsedSubstitutionBoxes = new List<List<SubstitutionBoxOutput>>();
         }
 
-        public void AddIntermediateOutput(int output) {
+        internal void AddIntermediateOutput(int output) {
             IntermediateOutputs.Add(output);
         }
 
-        public void AddIntermediateOutputs(IEnumerable<int> outputs) {
+        internal void AddIntermediateOutputs(IEnumerable<int> outputs) {
             IntermediateOutputs.AddRange(outputs);
+        }
+
+        internal void AddUsedSubstitionBoxForRound(List<SubstitutionBoxOutput> boxes) {
+            UsedSubstitutionBoxes.Add(boxes);
+        }
+
+        internal void AddUsedSubstitionBoxes(List<List<SubstitutionBoxOutput>> boxes) {
+            UsedSubstitutionBoxes.AddRange(boxes);
+        }
+
+        internal void SetUsedSubstitionBoxes(List<List<SubstitutionBoxOutput>> boxes) {
+            UsedSubstitutionBoxes.Clear();
+            UsedSubstitutionBoxes.AddRange(boxes);
         }
 
         public override string ToString() {
@@ -300,7 +324,7 @@ namespace DifferentialCyrptanalysis {
         }
     }
 
-    internal class SubstitutionBoxOutput {
+    public class SubstitutionBoxOutput {
         public byte Input { get; }
         public byte Output { get; }
         public double Bias { get; }

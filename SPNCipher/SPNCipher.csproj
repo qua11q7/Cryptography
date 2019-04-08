@@ -52,5 +52,8 @@
     <Compile Include="SPNCiphers.cs" />
     <Compile Include="SubstitutionBoxes.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SPNCipherDiagram.cd" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

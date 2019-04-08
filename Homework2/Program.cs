@@ -32,12 +32,12 @@ namespace Homework2 {
             Console.WriteLine("\tDIFFERENTIAL ANALYSIS OF " + spn.Name.ToUpper());
             DifferentialAnalyser analyser = new DifferentialAnalyser(spn);
 
-            Console.WriteLine("\r\n\tDifferential Table of " + spn.Name);
+            Console.WriteLine("\r\n\tDifference Distribution Table of " + spn.Name);
             Console.WriteLine(analyser.Table);
 
-            DifferentialExpression expression = analyser.CreateExpression();
-            Console.WriteLine("\r\n\tFound Differential Expression: ");
-            Console.WriteLine("\t" + expression);
+            DifferentialCharacteristic characteristic = analyser.CreateCharacteristic();
+            Console.WriteLine("\r\n\tFound Differential Characteristic: ");
+            Console.WriteLine("\t" + characteristic);
 
             int partialKey = analyser.Analyse();
             Console.WriteLine("\r\n\tFound Partial Key: ");
