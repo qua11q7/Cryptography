@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPNCipher", "SPNCipher\SPNC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DifferentialCyrptanalysis", "DifferentialCyrptanalysis\DifferentialCyrptanalysis.csproj", "{6A3E6DB7-15C4-49AF-9CBF-495DD6023F2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homework3", "Homework3\Homework3.csproj", "{868D3982-6D02-4435-A2B4-0C8D6B04CD0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSACipher", "RSACipher\RSACipher.csproj", "{239F92AB-9E82-402D-A9EF-F9514D7FE04B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{6A3E6DB7-15C4-49AF-9CBF-495DD6023F2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A3E6DB7-15C4-49AF-9CBF-495DD6023F2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A3E6DB7-15C4-49AF-9CBF-495DD6023F2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{868D3982-6D02-4435-A2B4-0C8D6B04CD0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{868D3982-6D02-4435-A2B4-0C8D6B04CD0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{868D3982-6D02-4435-A2B4-0C8D6B04CD0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{868D3982-6D02-4435-A2B4-0C8D6B04CD0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239F92AB-9E82-402D-A9EF-F9514D7FE04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239F92AB-9E82-402D-A9EF-F9514D7FE04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239F92AB-9E82-402D-A9EF-F9514D7FE04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239F92AB-9E82-402D-A9EF-F9514D7FE04B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
